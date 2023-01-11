@@ -38,3 +38,20 @@ export function getFileExtension(fileName) {
 		return "unknown";
 	}
 }
+
+export const downloadFile = async ({ source, name }) => {
+	try {
+		const response = await fetch(`${source}`);
+		const data = await response.blob();
+		const url = window.URL.createObjectURL(data);
+		const a = document.createElement("a");
+		a.style.display = "none";
+		a.href = url;
+		a.download = `${name}`;
+		document.body.appendChild(a);
+		a.click();
+		window.URL.revokeObjectURL(url);
+	} catch (error) {
+		console.error(error);
+	}
+};
