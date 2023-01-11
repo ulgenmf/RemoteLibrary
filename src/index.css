@@ -5,6 +5,9 @@
 .scrollbar-hide::-webkit-scrollbar {
 	display: none;
 }
+#element {
+	height: 200px;
+}
 
 /* For IE, Edge and Firefox */
 .scrollbar-hide {

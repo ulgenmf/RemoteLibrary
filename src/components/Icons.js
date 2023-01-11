@@ -4,6 +4,7 @@ export function Icon({ size, className, src }) {
 			src={`/../assets/${src}.png`}
 			size={`${size}`}
 			className={`${className}`}
+			alt=""
 		/>
 	);
 }
