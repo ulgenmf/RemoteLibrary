@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { app } from "../fireBase";
 import {
 	deleteObject,
 	getDownloadURL,
@@ -43,13 +44,11 @@ export default function Desktop() {
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
 	}
-
-	function previewElementUrlHandler(name) {
-		getDownloadURL(ref(storage, `/${name}`)).then((res) => {
-			"";
-		});
+	function switchHanlder() {
+		alert(
+			"Due to some complication in the code, this feature  has been disabled.Sorry about that "
+		);
 	}
-
 	useEffect(() => {
 		function a() {
 			for (let i = 0; i < checkedFiles.length; i++) {
@@ -77,7 +76,7 @@ export default function Desktop() {
 		);
 		listAll(ref(storage, "/")).then((res) => setSavedFiles(res.items));
 		a();
-	}, [savedFiles]);
+	}, []);
 
 	function cancelClick() {
 		setUploadFiles([]);
@@ -99,7 +98,7 @@ export default function Desktop() {
 		}
 
 		if (uploadFiles.length >= 1) {
-			alert("File/s Has Been Uploaded");
+			alert("File/s Has Been Uploaded,Please refresh the page");
 		} else {
 			alert("Something Went Wrong");
 		}
@@ -114,7 +113,7 @@ export default function Desktop() {
 
 			deleteObject(ref(storage, `/${element.name}`));
 		}
-		alert("Everything Has Been Deleted");
+		alert("Everything Has Been Deleted, Please Refresh the page");
 		setToggle("Preview");
 	}
 
@@ -124,7 +123,7 @@ export default function Desktop() {
 			deleteObject(ref(storage, `/${element}`));
 		}
 		deleteObject(ref(storage, `/${item}`));
-		alert("File/s deleted");
+		alert("File/s deleted,Please refresh the page");
 		setToggle("Preview");
 	}
 	function deleteMultiple() {
@@ -132,7 +131,7 @@ export default function Desktop() {
 			const element = checkedFiles[i];
 			deleteObject(ref(storage, `/${element}`));
 		}
-		alert("selected fiels are gone");
+		alert("selected fiels are gone,Please refresh the page");
 		setCheckedFiles([]);
 		setToggle("Preview");
 	}
@@ -144,12 +143,9 @@ export default function Desktop() {
 		}
 	}
 
-	let timeUpload = "";
-
-	function downloadFileHanlder() {
+	function downloadFileHandlder() {
 		for (let i = 0; i < downloadData.length; i++) {
 			const element = downloadData[i];
-
 			const name = element.name;
 			const source = element.source;
 			downloadFile({ source, name });
@@ -261,9 +257,8 @@ export default function Desktop() {
 							</button>
 
 							<button
-								hidden={confirmUpload}
 								// qwe
-								onClick={downloadFileHanlder}
+								onClick={switchHanlder}
 								className="  hover:animate-pulse  hover:text-lime-400 hover:duration-300   items-center active:animate-ping"
 							>
 								<ImFolderDownload size={65} />
@@ -277,59 +272,22 @@ export default function Desktop() {
 					</div>
 					{fileArray.map((item, index) => (
 						<label htmlFor={item.name} className="flex items-center mt-24 flex-col">
-							<div className=" w-28 active:pointer-events-none relative  hover:bg-blue-200 active:bg-blue-400   text-decoration-none  flex items-center flex-col  pt-2 rounded-lg overflow-clip  ">
-								{!switchToggle ? (
-									<>
-										<Icon className={"h-14"} src={getFileExtension(item.name)} />
-										<p className="text-center text-sm  select-none mt-2 text-decoration-none">
-											{item.name.length >= 8
-												? item.name.slice(0, 4) + "..."
-												: removeFileExtension(item.name)}
-										</p>
+							<div className=" w-28 active:pointer-events-none relative px hover:bg-blue-200 active:bg-blue-400   text-decoration-none  flex items-center flex-col  pt-2 rounded-lg overflow-clip  ">
+								<>
+									<Icon className={"h-14"} src={getFileExtension(item.name)} />
+									<p className="text-center text-sm  select-none mt-2 text-decoration-none">
+										{item.name.length >= 8
+											? item.name.slice(0, 4) + "..."
+											: removeFileExtension(item.name)}
+									</p>
 
-										<input
-											type="checkbox"
-											id={item.name}
-											onChange={() => checkboxHandler(item.name)}
-											value={item.name}
-										/>
-									</>
-								) : (
-									// qqq
-									<>
-										{getFileExtension(item.name) === "pdf" ? (
-											<Document
-												file={getDownloadURL((storage, `/${item.name}`)).then((res) => {
-													return console.log(res);
-												})}
-											>
-												<Page pageNumber={1} />
-											</Document>
-										) : getFileExtension(item.name) === "word" ? (
-											<>
-												<p>
-													{" "}
-													the api for excell and docx are really bad I removed the excel
-													preview and this docx api sometimes just dont work
-												</p>
-												<GoogleDocsViewer
-													width="600px"
-													height="780px"
-													fileUrl={
-														"https://firebasestorage.googleapis.com/v0/b/my-project-475d0.appspot.com/o/catLoremUpsum%20(2).docx?alt=media&token=a796ba87-a749-457f-a10a-76171d87ab25"
-													}
-												/>
-											</>
-										) : (
-											<img
-												src={
-													"https://firebasestorage.googleapis.com/v0/b/my-project-475d0.appspot.com/o/caft2%20(1).jpg?alt=media&token=c555a0ce-cb36-46a3-86ba-5267948458ee"
-												}
-												alt="Sorry unsupported format"
-											/>
-										)}
-									</>
-								)}
+									<input
+										type="checkbox"
+										id={item.name}
+										onChange={() => checkboxHandler(item.name)}
+										value={item.name}
+									/>
+								</>
 							</div>
 						</label>
 					))}
@@ -359,14 +317,14 @@ export default function Desktop() {
 							: "outline-none duration-200 hover:opacity-100 opacity-30 bg-blue-600 active:bg-violet-700 w-36   p-2 rounded-lg text-stone-100 font-mono"
 					)}
 				>
-					Preview
+					Files
 				</button>
 				<div className="relative">
-					<button onClick={() => setSwitchToggle((prev) => !prev)}>
+					<button onClick={switchHanlder}>
 						{switchToggle ? <MdToggleOn size={60} /> : <MdToggleOff size={60} />}
 					</button>
 					<p className="text-2xl absolute top-0   left-20">
-						{switchToggle ? "Picture Mode" : "Icon Mode"}
+						{switchToggle ? "Picture Mode" : "Preview Mode"}
 					</p>
 				</div>
 			</div>
